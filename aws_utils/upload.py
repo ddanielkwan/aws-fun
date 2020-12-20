@@ -4,7 +4,7 @@ import sys
 from utils import get_s3_client
 #CONSTANTS
 global bucketname
-bucketname = "stackname2-s3generalbucket-ioov7aj665vw" 
+bucketname ="xxx" 
 ARG_HELP = "File to upload" 
 DESCRIPTION = "Upload file to s3 bucket"
 
