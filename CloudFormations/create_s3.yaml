@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  s3kms:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: key-s3
+        Statement:
+        - Effect: Allow
+          Principal:
+            AWS: !Sub "arn:aws:iam::${AWS::AccountId}:user/Developer"
+          Action: kms:*
+          Resource: "*"
+      Tags:
+        - 
+          Key: "Primary Owner"
+          Value: "Daniel Kwan"
+  KeyAlias:
+    Type: 'AWS::KMS::Alias'
+    Properties:
+      AliasName: alias/s3databucketkey
+      TargetKeyId: 
+        Ref: s3kms
+  s3bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: "databucket"
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !Sub 'arn:aws:kms:${AWS::Region}:${AWS::AccountId}:${KeyAlias}'
+              SSEAlgorithm: 'aws:kms'
+Outputs:
+    s3KeyAlias:
+        Description: 'S3 KMS Key Alias'
+        Value:
+            Ref: 'KeyAlias'
+    s3bucket:
+        Description: 'Encrypted S3 Bucket for data analytics'
+        Value:
+            Ref: 's3bucket'
