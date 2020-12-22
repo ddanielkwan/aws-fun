@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation for Developer User
+Parameters:
+  Password:
+    NoEcho: 'true'
+    Type: String
+    Description: Account password
+    MinLength: '8'
+    MaxLength: '41'
+    ConstraintDescription: Password must be between 8 and 41 characters and contain at least one uppercase
+Resources:
+  DeveloperUser:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'Password'
+      UserName: test
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: "*"
+    
